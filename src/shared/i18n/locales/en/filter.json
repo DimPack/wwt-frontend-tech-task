@@ -1,1 +1,6 @@
-{}
+{
+    "mainTitle": "WinWinTravel frontend test task",
+    "filter": "Filter",
+    "apple": "Apple",
+    "clearParams": "Clear all parameters"
+}
