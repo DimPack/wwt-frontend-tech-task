@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { FiltersModal } from '../../../components/FilterModals/FiltersModal'
+import { FiltersModal } from '../../../components/FilterModals/FiltersModal.tsx'
 
 export const App = () => {
 	const { t } = useTranslation('filter')

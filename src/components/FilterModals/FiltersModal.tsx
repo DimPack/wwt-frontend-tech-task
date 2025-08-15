@@ -1,9 +1,14 @@
+import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { FilterForm } from '../FilterForm/FilterForm'
-import { Modal } from '../Modal/Modal'
+import { FilterForm } from '../FilterForm/FilterForm.tsx'
+import { Modal } from '../Modal/Modal.tsx'
 
-export const FiltersModal = ({ onClose }) => {
+interface FiltersModalProps {
+	onClose: () => void
+}
+
+export const FiltersModal: FC<FiltersModalProps> = ({ onClose }) => {
 	const { t } = useTranslation('filter')
 
 	return (

@@ -1,19 +1,39 @@
+import { FC, FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import filterData from '../../shared/temp/filterData.json'
 
-export const FilterForm = ({ onSubmit }) => {
+interface FilterOption {
+	id: string
+	name: string
+	description?: string
+}
+
+interface FilterGroup {
+	id: string
+	name: string
+	description?: string
+	options: FilterOption[]
+}
+
+interface FilterFormProps {
+	onSubmit: () => void
+}
+
+export const FilterForm: FC<FilterFormProps> = ({ onSubmit }) => {
 	const { t } = useTranslation('filter')
+
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		onSubmit()
+	}
 
 	return (
 		<form
-			onSubmit={e => {
-				e.preventDefault()
-				onSubmit()
-			}}
+			onSubmit={handleSubmit}
 			className="space-y-6"
 		>
-			{filterData.filterItems.map(group => (
+			{(filterData.filterItems as FilterGroup[]).map(group => (
 				<div
 					key={group.id}
 					className="border-b-2 border-[#B4B4B4] pb-[45px] first:border-t-2 first:border-[#B4B4B4] first:pt-[64px]"
