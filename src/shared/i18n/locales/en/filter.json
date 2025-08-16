@@ -1,9 +1,10 @@
 {
-    "mainTitle": "WinWinTravel frontend test task",
-    "filter": "Filter",
-    "apple": "Apple",
-    "clearParams": "Clear all parameters",
-    "approve": "Apply new filter",
-    "notApprove": "Use old filter",
-    "questionApprove": "Do you want to apply new filter"
+	"mainTitle": "WinWinTravel frontend test task",
+	"filter": "Filter",
+	"selectFilters": "Select filters:",
+	"apple": "Apple",
+	"clearParams": "Clear all parameters",
+	"approve": "Apply new filter",
+	"notApprove": "Use old filter",
+	"questionApprove": "Do you want to apply new filter"
 }

@@ -17,7 +17,17 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
 
 	setTempFilters: filters => set({ tempFilters: filters }),
 
-	confirmFilters: () => set({ confirmedFilters: get().tempFilters }),
+	confirmFilters: () => {
+		const temp = get().tempFilters
+		set({ confirmedFilters: temp })
+
+		const filtersToSave = temp.map(id => ({
+			id,
+			type: 'OPTION',
+			optionsIds: [id]
+		}))
+		localStorage.setItem('selectedFilters', JSON.stringify(filtersToSave))
+	},
 
 	resetTempFilters: () => set({ tempFilters: get().confirmedFilters }),
 
