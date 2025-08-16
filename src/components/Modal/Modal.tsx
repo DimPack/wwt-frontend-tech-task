@@ -1,22 +1,46 @@
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, useEffect, useRef } from 'react'
 
 interface ModalProps {
-	onClose: () => void
 	children: ReactNode
+	onRequestClose?: () => void
 }
 
-export const Modal: FC<ModalProps> = ({ onClose, children }) => {
+export const Modal: FC<ModalProps> = ({ children, onRequestClose }) => {
+	const modalRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		const handleEsc = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
+				onRequestClose?.()
+			}
+		}
+		document.addEventListener('keydown', handleEsc)
+		return () => document.removeEventListener('keydown', handleEsc)
+	}, [onRequestClose])
+
+	const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+			onRequestClose?.()
+		}
+	}
+
 	return (
-		<div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-black/50 p-4 pt-12 pb-12">
-			<div className="p-4 sm:p-6 md:p-8 lg:p-[34px] bg-white rounded-lg shadow-lg w-full max-w-screen-xl relative">
+		<div
+			onClick={handleClickOutside}
+			className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-black/50 p-4 pt-12 pb-12"
+		>
+			<div
+				ref={modalRef}
+				className="relative w-full max-w-screen-xl rounded-lg bg-white p-4 shadow-lg sm:p-6 md:p-8 lg:p-[34px]"
+			>
 				<button
-					onClick={onClose}
-					className="absolute top-10 right-10 text-gray-500 hover:text-gray-700 cursor-pointer"
+					onClick={onRequestClose}
+					className="absolute top-6 right-6 text-gray-500 transition hover:text-gray-700 cursor-pointer"
 				>
 					<img
 						src="/img/close.png"
 						alt="close"
-						className="object-cover transition-transform duration-100 hover:scale-120"
+						className="h-6 w-6 object-contain transition-transform hover:scale-110"
 					/>
 				</button>
 				{children}

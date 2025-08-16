@@ -1,14 +1,15 @@
-import { FC, FormEvent } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import filterData from '../../shared/temp/filterData.json'
+import { useFilterStore } from '../../stores/filterStore'
+import { ConfirmBox } from '../ConfigModal/ConfigModal.tsx'
 
 interface FilterOption {
 	id: string
 	name: string
 	description?: string
 }
-
 interface FilterGroup {
 	id: string
 	name: string
@@ -16,23 +17,39 @@ interface FilterGroup {
 	options: FilterOption[]
 }
 
-interface FilterFormProps {
-	onSubmit: () => void
-}
-
-export const FilterForm: FC<FilterFormProps> = ({ onSubmit }) => {
+export const FilterForm: FC = () => {
 	const { t } = useTranslation('filter')
+	const {
+		tempFilters,
+		setTempFilters,
+		confirmFilters,
+		resetTempFilters,
+		closeModal
+	} = useFilterStore()
 
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		onSubmit()
+	const [showConfirm, setShowConfirm] = useState(false)
+	const [attemptClose, setAttemptClose] = useState<() => void>(() => () => {})
+
+	const toggleOption = (id: string) => {
+		if (tempFilters.includes(id)) {
+			setTempFilters(tempFilters.filter(item => item !== id))
+		} else {
+			setTempFilters([...tempFilters, id])
+		}
 	}
 
+	const handleApplyClick = () => {
+		setAttemptClose(() => () => {
+			confirmFilters()
+			closeModal()
+		})
+		setShowConfirm(true)
+	}
+
+	const handleClear = () => setTempFilters([])
+
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className="space-y-6"
-		>
+		<div className="space-y-6">
 			{(filterData.filterItems as FilterGroup[]).map(group => (
 				<div
 					key={group.id}
@@ -42,7 +59,6 @@ export const FilterForm: FC<FilterFormProps> = ({ onSubmit }) => {
 					{group.description && (
 						<p className="text-sm text-gray-500 mb-3">{group.description}</p>
 					)}
-
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 						{group.options.map(option => (
 							<label
@@ -51,8 +67,8 @@ export const FilterForm: FC<FilterFormProps> = ({ onSubmit }) => {
 							>
 								<input
 									type="checkbox"
-									name={group.id}
-									value={option.id}
+									checked={tempFilters.includes(option.id)}
+									onChange={() => toggleOption(option.id)}
 									className="w-4 h-4"
 								/>
 								<span>{option.name}</span>
@@ -64,15 +80,34 @@ export const FilterForm: FC<FilterFormProps> = ({ onSubmit }) => {
 
 			<div className="flex flex-wrap justify-center items-center gap-3 pt-4">
 				<button
-					type="submit"
+					type="button"
+					onClick={handleApplyClick}
 					className="w-[150px] h-[50px] md:w-[184px] md:h-[64px] bg-[#FF5F00] text-white rounded-2xl cursor-pointer hover:bg-[#FF7F33] mx-auto"
 				>
 					{t('apple')}
 				</button>
-				<p className="text-[#078691] text-sm underline cursor-pointer">
+
+				<p
+					className="text-[#078691] text-sm underline cursor-pointer"
+					onClick={handleClear}
+				>
 					{t('clearParams')}
 				</p>
 			</div>
-		</form>
+
+			{showConfirm && (
+				<ConfirmBox
+					onConfirm={() => {
+						attemptClose()
+						setShowConfirm(false)
+					}}
+					onCancel={() => {
+						resetTempFilters()
+						setShowConfirm(false)
+					}}
+					onClose={() => setShowConfirm(false)}
+				/>
+			)}
+		</div>
 	)
 }

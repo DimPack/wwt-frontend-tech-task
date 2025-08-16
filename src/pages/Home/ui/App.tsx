@@ -1,11 +1,11 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { FiltersModal } from '../../../components/FilterModals/FiltersModal.tsx'
+import { useFilterStore } from '../../../stores/filterStore.ts'
 
 export const App = () => {
 	const { t } = useTranslation('filter')
-	const [isModalOpen, setIsModalOpen] = useState(false)
+	const { isModalOpen, openModal } = useFilterStore()
 
 	return (
 		<section className="w-full h-dvh flex items-center justify-center flex-col gap-6">
@@ -13,12 +13,12 @@ export const App = () => {
 
 			<button
 				className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
-				onClick={() => setIsModalOpen(true)}
+				onClick={openModal}
 			>
 				{t('filter')}
 			</button>
 
-			{isModalOpen && <FiltersModal onClose={() => setIsModalOpen(false)} />}
+			{isModalOpen && <FiltersModal />}
 		</section>
 	)
 }
